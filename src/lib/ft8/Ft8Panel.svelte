@@ -71,7 +71,19 @@
     try {
       stream = await navigator.mediaDevices.getUserMedia({ audio: { channelCount: 1 }, video: false });
     } catch (error) {
-      statusMessage = String((error as Error)?.message ?? error);
+      // Browsers/WebViews surface raw internal messages here ("Permission
+      // dismissed", "The request is not allowed"…). Map the known error
+      // names to honest, localized, actionable text instead of leaking them.
+      const name = (error as Error)?.name ?? '';
+      if (name === 'NotAllowedError' || name === 'SecurityError') {
+        statusMessage = t('ft8MicDenied');
+      } else if (name === 'NotFoundError' || name === 'DevicesNotFoundError') {
+        statusMessage = t('ft8MicNotFound');
+      } else if (name === 'NotReadableError') {
+        statusMessage = t('ft8MicBusy');
+      } else {
+        statusMessage = String((error as Error)?.message ?? error);
+      }
       return;
     }
 

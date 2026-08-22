@@ -22,7 +22,10 @@ const messages = {
     stationDiagram: 'Station diagram', templateAdded: 'Template inserted',
     ft8: 'FT8', ft8Start: 'Start listening', ft8Stop: 'Stop listening',
     ft8Hint: 'Decodes locally from the microphone; nothing leaves this device.',
-    ft8Empty: 'No messages decoded yet', ft8CopyCall: 'Copy callsign', ft8LogQso: 'Log QSO', ft8NextSlot: 'Next slot in'
+    ft8Empty: 'No messages decoded yet', ft8CopyCall: 'Copy callsign', ft8LogQso: 'Log QSO', ft8NextSlot: 'Next slot in',
+      ft8MicDenied: "Microphone unavailable: permission denied. Allow microphone access for this app in Android settings and reopen FT8.",
+      ft8MicNotFound: "No microphone found on this device.",
+      ft8MicBusy: "The microphone is in use by another app.",
   },
   uk: {
     appName: 'Signal & Radio Log', newQso: 'Нове QSO', logbook: 'Журнал', notes: 'Нотатки', settings: 'Станція',
@@ -46,7 +49,10 @@ const messages = {
     stationDiagram: 'Схема станції', templateAdded: 'Шаблон вставлено',
     ft8: 'FT8', ft8Start: 'Почати прослуховування', ft8Stop: 'Зупинити прослуховування',
     ft8Hint: 'Декодується локально з мікрофона; нічого не залишає цей пристрій.',
-    ft8Empty: 'Ще немає декодованих повідомлень', ft8CopyCall: 'Скопіювати позивний', ft8LogQso: 'Записати QSO', ft8NextSlot: 'Наступний слот через'
+    ft8Empty: 'Ще немає декодованих повідомлень', ft8CopyCall: 'Скопіювати позивний', ft8LogQso: 'Записати QSO', ft8NextSlot: 'Наступний слот через',
+      ft8MicDenied: "\u041c\u0456\u043a\u0440\u043e\u0444\u043e\u043d \u043d\u0435\u0434\u043e\u0441\u0442\u0443\u043f\u043d\u0438\u0439: \u0434\u043e\u0437\u0432\u0456\u043b \u0437\u0430\u0431\u043e\u0440\u043e\u043d\u0435\u043d\u043e. \u0414\u043e\u0437\u0432\u043e\u043b\u044c\u0442\u0435 \u043c\u0456\u043a\u0440\u043e\u0444\u043e\u043d \u0434\u043b\u044f \u0437\u0430\u0441\u0442\u043e\u0441\u0443\u043d\u043a\u0443 \u0432 \u043d\u0430\u043b\u0430\u0448\u0442\u0443\u0432\u0430\u043d\u043d\u044f\u0445 Android \u0456 \u0432\u0456\u0434\u043a\u0440\u0438\u0439\u0442\u0435 FT8 \u0437\u043d\u043e\u0432\u0443.",
+      ft8MicNotFound: "\u041c\u0456\u043a\u0440\u043e\u0444\u043e\u043d \u043d\u0435 \u0437\u043d\u0430\u0439\u0434\u0435\u043d\u043e \u043d\u0430 \u0446\u044c\u043e\u043c\u0443 \u043f\u0440\u0438\u0441\u0442\u0440\u043e\u0457.",
+      ft8MicBusy: "\u041c\u0456\u043a\u0440\u043e\u0444\u043e\u043d \u0437\u0430\u0439\u043d\u044f\u0442\u0438\u0439 \u0456\u043d\u0448\u0438\u043c \u0437\u0430\u0441\u0442\u043e\u0441\u0443\u043d\u043a\u043e\u043c.",
   },
   de: {
     appName: 'Signal & Radio Log', newQso: 'Neues QSO', logbook: 'Logbuch', notes: 'Notizen', settings: 'Station',
@@ -71,7 +77,10 @@ const messages = {
     stationDiagram: 'Stationsdiagramm', templateAdded: 'Vorlage eingefügt',
     ft8: 'FT8', ft8Start: 'Empfang starten', ft8Stop: 'Empfang stoppen',
     ft8Hint: 'Wird lokal vom Mikrofon dekodiert; nichts verlässt dieses Gerät.',
-    ft8Empty: 'Noch keine Nachrichten dekodiert', ft8CopyCall: 'Rufzeichen kopieren', ft8LogQso: 'QSO loggen', ft8NextSlot: 'Nächster Slot in'
+    ft8Empty: 'Noch keine Nachrichten dekodiert', ft8CopyCall: 'Rufzeichen kopieren', ft8LogQso: 'QSO loggen', ft8NextSlot: 'Nächster Slot in',
+      ft8MicDenied: "Mikrofon nicht verf\u00fcgbar: Berechtigung verweigert. Erlauben Sie den Mikrofonzugriff f\u00fcr die App in den Android-Einstellungen und \u00f6ffnen Sie FT8 erneut.",
+      ft8MicNotFound: "Kein Mikrofon auf diesem Ger\u00e4t gefunden.",
+      ft8MicBusy: "Das Mikrofon wird von einer anderen App verwendet.",
   }
 } as const;
 
