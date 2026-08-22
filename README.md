@@ -18,18 +18,18 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/juv4uk/my-ide/releases"><img src="https://img.shields.io/github/v/release/juv4uk/my-ide?color=7c3aed&label=release" alt="Latest release"></a>
-  <a href="https://github.com/juv4uk/my-ide/actions"><img src="https://github.com/juv4uk/my-ide/actions/workflows/publish-release.yml/badge.svg" alt="Build status"></a>
+  <a href="https://github.com/juv4uk/radio-log/releases"><img src="https://img.shields.io/github/v/release/juv4uk/radio-log?color=7c3aed&label=release" alt="Latest release"></a>
+  <a href="https://github.com/juv4uk/radio-log/actions"><img src="https://github.com/juv4uk/radio-log/actions/workflows/publish-release.yml/badge.svg" alt="Build status"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-f59e0b" alt="MIT License"></a>
 </p>
 
 ## Quick try · Швидко спробувати · Schnell ausprobieren
 
-No installation and no account: **[download the standalone Web app](https://github.com/juv4uk/my-ide/releases/latest/download/signal-radio-log-web.html)** and open the downloaded `.html` file in your browser. Everything needed by the interface is inside that one file, and your log stays on your device.
+No installation and no account: **[download the standalone Web app](https://github.com/juv4uk/radio-log/releases/latest/download/signal-radio-log-web.html)** and open the downloaded `.html` file in your browser. Everything needed by the interface is inside that one file, and your log stays on your device.
 
-Без встановлення та облікового запису: **[завантажте автономну Web-версію](https://github.com/juv4uk/my-ide/releases/latest/download/signal-radio-log-web.html)** і відкрийте отриманий файл `.html` у браузері. Усе потрібне для інтерфейсу міститься в одному файлі, а журнал залишається на вашому пристрої.
+Без встановлення та облікового запису: **[завантажте автономну Web-версію](https://github.com/juv4uk/radio-log/releases/latest/download/signal-radio-log-web.html)** і відкрийте отриманий файл `.html` у браузері. Усе потрібне для інтерфейсу міститься в одному файлі, а журнал залишається на вашому пристрої.
 
-Ohne Installation und Benutzerkonto: **[die eigenständige Web-App herunterladen](https://github.com/juv4uk/my-ide/releases/latest/download/signal-radio-log-web.html)** und die geladene `.html`-Datei im Browser öffnen. Die gesamte Oberfläche steckt in dieser einen Datei; das Logbuch bleibt auf Ihrem Gerät.
+Ohne Installation und Benutzerkonto: **[die eigenständige Web-App herunterladen](https://github.com/juv4uk/radio-log/releases/latest/download/signal-radio-log-web.html)** und die geladene `.html`-Datei im Browser öffnen. Die gesamte Oberfläche steckt in dieser einen Datei; das Logbuch bleibt auf Ihrem Gerät.
 
 ## See it in action · Подивіться в роботі · In Aktion
 
@@ -81,7 +81,7 @@ The project has a special place for **QRPp** experiments at 500, 100, or even 50
 
 ## Download
 
-Get the latest build from **[Releases](https://github.com/juv4uk/my-ide/releases)**.
+Get the latest build from **[Releases](https://github.com/juv4uk/radio-log/releases)**.
 
 | Platform | Package |
 |---|---|
@@ -105,7 +105,7 @@ Signal & Radio Log is a serious open-source project, but it is still maintained 
 
 Help with Rust, Svelte, accessibility, security, radio workflows, documentation, and release engineering is welcome. You do not have to take over the project. Reviewing one workflow or mentoring one architectural decision is already valuable.
 
-If you are an experienced developer, radio amateur, teacher, or maintainer and this small independent project speaks to you, please **[open an Issue and say hello](https://github.com/juv4uk/my-ide/issues/new)**. We would be glad to build it with you.
+If you are an experienced developer, radio amateur, teacher, or maintainer and this small independent project speaks to you, please **[open an Issue and say hello](https://github.com/juv4uk/radio-log/issues/new)**. We would be glad to build it with you.
 
 ---
 
@@ -131,7 +131,7 @@ If you are an experienced developer, radio amateur, teacher, or maintainer and t
 - використовувати основу безпечних локальних [Radio Rules](docs/radio-rules.md) для тегів і нотаток QSO;
 - одним торканням перемикати англійську, українську та німецьку.
 
-Остання версія доступна на сторінці **[Releases](https://github.com/juv4uk/my-ide/releases)**.
+Остання версія доступна на сторінці **[Releases](https://github.com/juv4uk/radio-log/releases)**.
 
 ### Що буде далі
 
@@ -143,7 +143,7 @@ Signal & Radio Log — уже серйозний open-source проєкт, ал�
 
 Цінною буде допомога з Rust, Svelte, доступністю, безпекою, радіоаматорськими сценаріями, документацією та release engineering. Не обов’язково брати на себе весь проєкт. Перевірити один workflow або допомогти з одним архітектурним рішенням — це вже багато.
 
-Якщо ви досвідчений розробник, радіоаматор, викладач або мейнтейнер і вам близький цей маленький незалежний проєкт — **[відкрийте Issue й просто привітайтеся](https://github.com/juv4uk/my-ide/issues/new)**. Ми будемо раді будувати його разом.
+Якщо ви досвідчений розробник, радіоаматор, викладач або мейнтейнер і вам близький цей маленький незалежний проєкт — **[відкрийте Issue й просто привітайтеся](https://github.com/juv4uk/radio-log/issues/new)**. Ми будемо раді будувати його разом.
 
 ---
 
@@ -169,7 +169,7 @@ Einen besonderen Platz haben **QRPp**-Experimente mit 500, 100 oder sogar 50 mW.
 - die sichere lokale [Radio-Rules](docs/radio-rules.md)-Grundlage für QSO-Tags und Notizen nutzen;
 - mit einmaligem Antippen zwischen Englisch, Ukrainisch und Deutsch wechseln.
 
-Die aktuelle Version steht unter **[Releases](https://github.com/juv4uk/my-ide/releases)** bereit.
+Die aktuelle Version steht unter **[Releases](https://github.com/juv4uk/radio-log/releases)** bereit.
 
 ### Wie es weitergeht
 
@@ -181,7 +181,7 @@ Signal & Radio Log ist bereits ein ernsthaftes Open-Source-Projekt, wird aber vo
 
 Hilfe bei Rust, Svelte, Barrierefreiheit, Sicherheit, Amateurfunk-Abläufen, Dokumentation und Release Engineering ist willkommen. Niemand muss gleich das ganze Projekt übernehmen. Ein Workflow-Review oder Begleitung bei einer Architekturentscheidung ist bereits wertvoll.
 
-Wenn Sie erfahrener Entwickler, Funkamateur, Lehrer oder Maintainer sind und dieses kleine unabhängige Projekt Sie anspricht, **[öffnen Sie bitte ein Issue und sagen Sie einfach Hallo](https://github.com/juv4uk/my-ide/issues/new)**. Wir würden uns freuen, es gemeinsam mit Ihnen weiterzuentwickeln.
+Wenn Sie erfahrener Entwickler, Funkamateur, Lehrer oder Maintainer sind und dieses kleine unabhängige Projekt Sie anspricht, **[öffnen Sie bitte ein Issue und sagen Sie einfach Hallo](https://github.com/juv4uk/radio-log/issues/new)**. Wir würden uns freuen, es gemeinsam mit Ihnen weiterzuentwickeln.
 
 ---
 
@@ -195,7 +195,7 @@ The project is ready for contributors and mentors, especially around signed Appl
 
 Das Projekt freut sich über Mitwirkende und Mentoren, besonders bei signierten Apple-Releases und Tests auf echten Geräten. Auch kleine, geduldige Beiträge helfen—niemand soll alles allein übernehmen.
 
-**[Introduce yourself in a GitHub Issue · Напишіть про себе в Issue · Stellen Sie sich in einem Issue vor](https://github.com/juv4uk/my-ide/issues/new)**
+**[Introduce yourself in a GitHub Issue · Напишіть про себе в Issue · Stellen Sie sich in einem Issue vor](https://github.com/juv4uk/radio-log/issues/new)**
 
 ## About the author
 
@@ -219,7 +219,7 @@ npm run build
 cargo check --manifest-path src-tauri/Cargo.toml
 ```
 
-Built with [Tauri 2](https://v2.tauri.app/), [SvelteKit](https://svelte.dev/docs/kit), TypeScript, and Rust. Contributions, translations, device testing, and practical amateur-radio experience are welcome. You can start with an **[Issue](https://github.com/juv4uk/my-ide/issues)**.
+Built with [Tauri 2](https://v2.tauri.app/), [SvelteKit](https://svelte.dev/docs/kit), TypeScript, and Rust. Contributions, translations, device testing, and practical amateur-radio experience are welcome. You can start with an **[Issue](https://github.com/juv4uk/radio-log/issues)**.
 
 <a id="license"></a>
 
