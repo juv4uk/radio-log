@@ -1,0 +1,13 @@
+; tasks.my — durable task plan for radio-log. Same alist shape as
+; sibling repos' tasks.my.
+
+((tasks . (
+  ("RADIO-LOG-QSO-CONNECT-TRANSPORT-FOUNDATION" . (
+    (priority . 6.0)
+    (capabilities . (rust svelte security radio-workflows))
+    (origin . radio-log)
+    (context . "README's own 'What comes next' section: QSO Connect (bridge between an on-air contact and private online communication) is the stated next feature -- encrypted, transport-independent foundation already being built, internet relay first, WebRTC P2P / LoRa later. The offline-first journal itself must stay fully useful without it.")
+    (description . "Track and verify the QSO Connect transport-independence property as it's built: the encrypted foundation should not couple the offline journal's core usefulness to any one transport (internet relay / WebRTC / LoRa). No implementation prescribed here -- this task exists so the property is checked against, not assumed, as the feature lands.")
+    (done . ())
+  ))
+)))
