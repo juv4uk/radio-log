@@ -225,8 +225,4 @@ Built with [Tauri 2](https://v2.tauri.app/), [SvelteKit](https://svelte.dev/docs
 
 ## License · Ліцензія · Lizenz
 
-Signal & Radio Log is open-source software available under the **[MIT License](LICENSE)**.
-
-Signal & Radio Log — програмне забезпечення з відкритим кодом за умовами **[ліцензії MIT](LICENSE)**.
-
-Signal & Radio Log ist Open-Source-Software unter der **[MIT-Lizenz](LICENSE)**.
+[ВОЛЬНІСТЬ](LICENSE)
