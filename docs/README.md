@@ -2,7 +2,7 @@
 
 **[English](#english) · [Українська](#українська) · [Deutsch](#deutsch)**
 
-This directory is the technical and user documentation for Signal & Radio Log. Documentation describes version **0.5.5** and distinguishes shipped features from foundations that are not yet exposed in the interface.
+This directory is the technical and user documentation for Signal & Radio Log. Documentation describes version **0.6.5** and distinguishes shipped features from foundations that are not yet exposed in the interface.
 
 | Document | Purpose |
 |---|---|
@@ -24,7 +24,7 @@ Status words used throughout the documentation:
 
 ## Українська
 
-Ця папка містить користувацьку й технічну документацію Signal & Radio Log версії **0.5.5**. Для знайомства з програмою почніть із [можливостей і посібника](features.md). Розробникам варто також прочитати [архітектуру](architecture.md), [дані та безпеку](data-and-security.md) і [розробку та релізи](development.md).
+Ця папка містить користувацьку й технічну документацію Signal & Radio Log версії **0.6.5**. Для знайомства з програмою почніть із [можливостей і посібника](features.md). Розробникам варто також прочитати [архітектуру](architecture.md), [дані та безпеку](data-and-security.md) і [розробку та релізи](development.md).
 
 Позначення стану:
 
@@ -34,11 +34,10 @@ Status words used throughout the documentation:
 
 ## Deutsch
 
-Dieser Ordner enthält die Benutzer- und Technikdokumentation für Signal & Radio Log **0.5.5**. Benutzer beginnen mit [Funktionen und Benutzerhandbuch](features.md). Mitwirkende lesen anschließend [Architektur](architecture.md), [Daten und Sicherheit](data-and-security.md) sowie [Entwicklung und Releases](development.md).
+Dieser Ordner enthält die Benutzer- und Technikdokumentation für Signal & Radio Log **0.6.5**. Benutzer beginnen mit [Funktionen und Benutzerhandbuch](features.md). Mitwirkende lesen anschließend [Architektur](architecture.md), [Daten und Sicherheit](data-and-security.md) sowie [Entwicklung und Releases](development.md).
 
 Statusbegriffe:
 
 - **Verfügbar** — in der aktuellen Oberfläche erreichbar.
 - **Grundlage** — implementiert und getestet, aber noch ohne Benutzeroberfläche.
 - **Geplant** — Entwicklungsrichtung, keine bereits ausgelieferte Funktion.
-
