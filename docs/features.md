@@ -54,7 +54,7 @@ Capture windows are aligned to UTC 15-second slot boundaries (…00, …15, …3
 
 Decoded messages are parsed into their standard structure (CQ, grid exchange, signal report, RRR, RR73, 73) rather than guessed at, and each entry shows its recognized type. Entries that imply a completed exchange get a "Log QSO" button that saves a record straight to the log in one click — callsign, mode, report, grid, and UTC date/time from the decode. A wrong entry can be fixed afterward from the Logbook tab (Edit/Delete), same as any other saved QSO.
 
-Known gaps: there is no transmit (encode/playback) screen yet — the codec supports it, but the UI is not built. Android requires the device to grant microphone access to the app's WebView; this has not yet been validated on real hardware. iOS microphone permission (`NSMicrophoneUsageDescription`) is not yet configured, since the platform's generated project is not committed to the repository yet.
+Known gaps: there is no transmit (encode/playback) screen yet — the codec supports it, but the UI is not built. Android requests the microphone permission at app start (fixed in r0.6.5); validation on a wide range of devices is still welcome. iOS microphone permission (`NSMicrophoneUsageDescription`) is not yet configured, since the platform's generated project is not committed to the repository yet.
 
 ### Station profile — available
 
@@ -77,7 +77,7 @@ Releases provide Windows, Linux, macOS, Android, iOS Simulator, ARM64 Linux/Rasp
 - Notes are a single document rather than per-QSO notes.
 - The iOS artifact is for Simulator, not a signed App Store/device build.
 - macOS packages are CI-built but are not described as notarized production distributions.
-- FT8 has no transmit or auto-log-to-QSO workflow yet, and mobile microphone permission handling is unvalidated.
+- FT8 has no transmit (encode/playback) UI yet. One-tap "Log QSO" from a completed decode is available; full auto-logging of every decode is not.
 
 ## Українська
 
@@ -121,7 +121,7 @@ QSO впорядковано від нових до старих. Пошук п�
 
 Декодовані повідомлення розбираються за стандартною структурою (CQ, обмін локаторами, сигнальний рапорт, RRR, RR73, 73), а не вгадуються, і кожен запис показує розпізнаний тип. Записи, що означають завершений обмін, отримують кнопку "Записати QSO", яка одним кліком зберігає запис одразу в журнал — позивний, режим, рапорт, локатор і UTC дату/час із декоду. Помилковий запис можна виправити потім із вкладки Журнал (Змінити/Видалити), так само як і будь-яке інше збережене QSO.
 
-Відомі обмеження: екрана передачі (кодування й відтворення) ще немає — кодек це підтримує, але UI не побудовано. На Android застосунку потрібно, щоб WebView отримав дозвіл на мікрофон — це ще не перевірено на реальному пристрої. Дозвіл мікрофона для iOS (`NSMicrophoneUsageDescription`) ще не налаштовано, бо згенерований проєкт платформи ще не закомічено в репозиторій.
+Відомі обмеження: екрана передачі (кодування й відтворення) ще немає — кодек це підтримує, але UI не побудовано. Android запитує дозвіл мікрофона при старті (виправлено в r0.6.5); перевірка на ширшому колі пристроїв вітається. Дозвіл мікрофона для iOS (`NSMicrophoneUsageDescription`) ще не налаштовано, бо згенерований проєкт платформи ще не закомічено в репозиторій.
 
 ### Профіль станції — доступно
 
@@ -143,7 +143,7 @@ QSO впорядковано від нових до старих. Пошук п�
 - Повторний імпорт того самого ADIF може створити дублікати.
 - Нотатки поки є одним документом, а не окремими для кожного QSO.
 - iOS-пакет призначено для Simulator; macOS-збірка не заявлена як нотаризована production-версія.
-- У FT8 ще немає передачі й автозапису в журнал; дозволи мікрофона на мобільних не перевірено.
+- У FT8 ще немає екрана передачі. Кнопка «Записати QSO» з завершеного декоду доступна; повний автозапис кожного декоду — ні.
 
 ## Deutsch
 
@@ -175,7 +175,7 @@ Erfassungsfenster sind an UTC-15-Sekunden-Slotgrenzen (…00, …15, …30, …4
 
 Dekodierte Nachrichten werden in ihre Standardstruktur zerlegt (CQ, Locator-Austausch, Signalbericht, RRR, RR73, 73) statt geraten, und jeder Eintrag zeigt seinen erkannten Typ. Einträge, die einen abgeschlossenen Austausch bedeuten, erhalten eine "QSO loggen"-Schaltfläche, die den Datensatz mit einem Klick direkt im Logbuch speichert — Rufzeichen, Betriebsart, Bericht, Locator und UTC-Datum/-Zeit aus der Dekodierung. Ein falscher Eintrag lässt sich danach im Logbuch-Tab korrigieren (Bearbeiten/Löschen), genau wie jedes andere gespeicherte QSO.
 
-Bekannte Lücken: Es gibt noch keinen Sende-Bildschirm (Kodierung/Wiedergabe) — der Codec unterstützt es, die UI ist aber nicht gebaut. Android muss dem WebView der App noch Mikrofonzugriff gewähren; das wurde auf echter Hardware noch nicht geprüft. Die iOS-Mikrofonberechtigung (`NSMicrophoneUsageDescription`) ist noch nicht konfiguriert, da das generierte Plattformprojekt noch nicht im Repository committet ist.
+Bekannte Lücken: Es gibt noch keinen Sende-Bildschirm (Kodierung/Wiedergabe) — der Codec unterstützt es, die UI ist aber nicht gebaut. Android fragt die Mikrofonberechtigung beim Start an (behoben in r0.6.5); Tests auf weiteren Geräten sind willkommen. Die iOS-Mikrofonberechtigung (`NSMicrophoneUsageDescription`) ist noch nicht konfiguriert, da das generierte Plattformprojekt noch nicht im Repository committet ist.
 
 ### Stationsprofil — verfügbar
 
@@ -193,5 +193,4 @@ Pakete existieren für Windows, Linux, macOS, Android, iOS Simulator, ARM64 Linu
 
 ### Grenzen
 
-Keine Cloud-Synchronisierung oder automatische Sicherung; erneuter ADIF-Import kann Duplikate erzeugen; Notizen sind ein gemeinsames Dokument; iOS ist Simulator-only; macOS wird nicht als notarisiertes Produktionspaket bezeichnet; FT8 hat noch kein Senden und kein Auto-Logging ins QSO; die Mikrofonberechtigung auf Mobilgeräten ist ungeprüft.
-
+Keine Cloud-Synchronisierung oder automatische Sicherung; erneuter ADIF-Import kann Duplikate erzeugen; Notizen sind ein gemeinsames Dokument; iOS ist Simulator-only; macOS wird nicht als notarisiertes Produktionspaket bezeichnet; FT8 hat noch keine Sende-UI (Ein-Tipp-"QSO loggen" aus abgeschlossener Dekodierung ist verfügbar).
