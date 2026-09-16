@@ -4,6 +4,7 @@ version = "0.6.4"
 description = "Offline amateur radio logbook / Офлайн-журнал радіоаматора / Offline-Amateurfunk-Logbuch"
 authors = ["you"]
 edition = "2021"
+license-file = "../LICENSE"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
