@@ -137,6 +137,13 @@ function validatePolicy(profile: SensRadioProfile, frame: SensRadioFrame): void 
   if (frame.encrypted && profile.encryptionPolicy === 'forbidden') {
     throw new Error(`profile ${profile.id} forbids encrypted payloads`);
   }
+  if (
+    frame.encrypted &&
+    profile.encryptionPolicy === 'requires-legal-validation' &&
+    profile.status !== 'operator-validated'
+  ) {
+    throw new Error(`profile ${profile.id} requires legal validation before encrypted transport`);
+  }
   if (profile.txEnabled && profile.status !== 'operator-validated') {
     throw new Error(`profile ${profile.id} cannot transmit before operator validation`);
   }
