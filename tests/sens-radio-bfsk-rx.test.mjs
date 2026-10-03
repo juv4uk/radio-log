@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import { decodeAlignedBfsk, decisionsToBitString } from '../.test-build/src/lib/sens-radio/bfsk-rx.js';
+import { decodeSensRadioFrame, encodeSensRadioFrame } from '../.test-build/src/lib/sens-radio/frame.js';
 
 const config = {
   sampleRate: 8000,
@@ -48,4 +49,26 @@ test('reports silence as low confidence instead of inventing a reliable bit', ()
 test('rejects invalid tone and sampling configurations', () => {
   assert.throws(() => decodeAlignedBfsk(synthesize('1'), { ...config, oneToneHz: config.zeroToneHz }), /must differ/);
   assert.throws(() => decodeAlignedBfsk(synthesize('1'), { ...config, oneToneHz: 5000 }), /Nyquist/);
+});
+
+
+function bytesToBits(bytes) {
+  return Array.from(bytes, (byte) => byte.toString(2).padStart(8, '0')).join('');
+}
+
+function bitsToBytes(bits) {
+  assert.equal(bits.length % 8, 0);
+  return Uint8Array.from({ length: bits.length / 8 }, (_, index) =>
+    Number.parseInt(bits.slice(index * 8, index * 8 + 8), 2)
+  );
+}
+
+test('round-trips a complete SENS-RADIO frame through deterministic BFSK audio', () => {
+  const sensBits = '001000101101';
+  const frame = encodeSensRadioFrame(sensBits);
+  const wireBits = bytesToBits(frame);
+  const receivedBits = decisionsToBitString(decodeAlignedBfsk(synthesize(wireBits), config), 0.8);
+  const decoded = decodeSensRadioFrame(bitsToBytes(receivedBits));
+  assert.equal(decoded.bits, sensBits);
+  assert.equal(decoded.bitLength, sensBits.length);
 });
