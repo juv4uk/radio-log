@@ -11,6 +11,7 @@ This directory is the technical and user documentation for Signal & Radio Log. D
 | [Data formats and security](data-and-security.md) | QSO model, ADIF behavior, local storage, Markdown sanitization, Radio Rules, and QSO Connect cryptography |
 | [Development, builds, and releases](development.md) | Local commands, tests, platform packages, CI, signing, and release process |
 | [Radio Rules 0.1](radio-rules.md) | Reference for the safe Lisp-like rules language |
+| [SENS radio link](sens-radio.md) | Bit-exact public framing, receive-only BFSK lab, and frequency-profile boundary |
 
 ## English
 
