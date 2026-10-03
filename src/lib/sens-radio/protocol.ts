@@ -46,7 +46,7 @@ const MAGIC_0 = 0x53; // S
 const MAGIC_1 = 0x52; // R
 const FRAME_VERSION = 1;
 const FLAG_ENCRYPTED = 0x01;
-const HEADER_BYTES = 16;
+const HEADER_BYTES = 17;
 const CRC_BYTES = 4;
 
 export const LAB_LOOPBACK_PROFILE: SensRadioProfile = {
@@ -174,23 +174,25 @@ export function encodeSensRadioFrame(frame: SensRadioFrame): Uint8Array {
   output[0] = MAGIC_0;
   output[1] = MAGIC_1;
   output[2] = FRAME_VERSION;
-  output[3] = frame.encrypted ? FLAG_ENCRYPTED : 0;
-  writeU32(view, 4, frame.streamId);
-  writeU32(view, 8, frame.sequence);
-  writeU32(view, 12, frame.wire.payloadBitLength);
+  output[3] = frame.wire.wireVersion;
+  output[4] = frame.encrypted ? FLAG_ENCRYPTED : 0;
+  writeU32(view, 5, frame.streamId);
+  writeU32(view, 9, frame.sequence);
+  writeU32(view, 13, frame.wire.payloadBitLength);
   output.set(frame.wire.payload, HEADER_BYTES);
   writeU32(view, output.length - CRC_BYTES, crc32(output.subarray(0, output.length - CRC_BYTES)));
   return output;
 }
 
-export function decodeSensRadioFrame(bytes: Uint8Array, wireVersion = 1): SensRadioFrame {
+export function decodeSensRadioFrame(bytes: Uint8Array): SensRadioFrame {
   if (bytes.length < HEADER_BYTES + CRC_BYTES) throw new Error('truncated SENS radio frame');
   if (bytes[0] !== MAGIC_0 || bytes[1] !== MAGIC_1) throw new Error('invalid SENS radio frame magic');
   if (bytes[2] !== FRAME_VERSION) throw new Error('unsupported SENS radio frame version');
-  if ((bytes[3] & ~FLAG_ENCRYPTED) !== 0) throw new Error('unknown SENS radio frame flags');
+  const wireVersion = bytes[3];
+  if ((bytes[4] & ~FLAG_ENCRYPTED) !== 0) throw new Error('unknown SENS radio frame flags');
 
   const view = new DataView(bytes.buffer, bytes.byteOffset, bytes.byteLength);
-  const payloadBitLength = readU32(view, 12);
+  const payloadBitLength = readU32(view, 13);
   const expectedPayloadBytes = payloadByteLength(payloadBitLength);
   const expectedLength = HEADER_BYTES + expectedPayloadBytes + CRC_BYTES;
   if (bytes.length !== expectedLength) throw new Error('SENS radio frame length mismatch');
@@ -205,9 +207,9 @@ export function decodeSensRadioFrame(bytes: Uint8Array, wireVersion = 1): SensRa
 
   return {
     version: 1,
-    streamId: readU32(view, 4),
-    sequence: readU32(view, 8),
-    encrypted: (bytes[3] & FLAG_ENCRYPTED) !== 0,
+    streamId: readU32(view, 5),
+    sequence: readU32(view, 9),
+    encrypted: (bytes[4] & FLAG_ENCRYPTED) !== 0,
     wire
   };
 }
@@ -231,7 +233,7 @@ export class SensRadioLoopbackTransport {
   send(frame: SensRadioFrame): Uint8Array {
     validatePolicy(this.profile, frame);
     const rawFrame = encodeSensRadioFrame(frame);
-    const decoded = decodeSensRadioFrame(rawFrame, frame.wire.wireVersion);
+    const decoded = decodeSensRadioFrame(rawFrame);
     const evidence: SensRadioRxEvidence = {
       profileId: this.profile.id,
       centerFrequencyHz: this.profile.centerFrequencyHz,
