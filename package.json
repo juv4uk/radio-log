@@ -1,7 +1,7 @@
 {
   "name": "radio-log",
   "version": "0.6.5",
-  "description": "Offline amateur radio logbook / \u041e\u0444\u043b\u0430\u0439\u043d-\u0436\u0443\u0440\u043d\u0430\u043b \u0440\u0430\u0434\u0456\u043e\u0430\u043c\u0430\u0442\u043e\u0440\u0430 / Offline-Amateurfunk-Logbuch",
+  "description": "Offline amateur radio logbook / Офлайн-журнал радіоаматора / Offline-Amateurfunk-Logbuch",
   "type": "module",
   "scripts": {
     "dev": "vite dev",
@@ -10,7 +10,8 @@
     "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
     "test": "tsc -p tsconfig.test.json && node --test tests/*.test.mjs",
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
-    "tauri": "tauri"
+    "tauri": "tauri",
+    "bench:emrg": "tsc -p tsconfig.test.json && node scripts/emrg-black-sky-bench.mjs"
   },
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
