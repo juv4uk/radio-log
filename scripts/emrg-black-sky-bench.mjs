@@ -3,6 +3,7 @@ import {
   BLACK_SKY_LAB_PROFILE_A,
   BLACK_SKY_LAB_PROFILE_B,
   countRejectedFrameFaults,
+  simulateBlackSkyDelivery,
   simulateBlackSkyRoundTrip
 } from '../.test-build/src/lib/sens-radio/black-sky.js';
 import { encodeSensRadioFrame } from '../.test-build/src/lib/sens-radio/frame.js';
@@ -22,6 +23,7 @@ for (const fixture of fixtures) {
 
   for (const profile of profiles) {
     const result = simulateBlackSkyRoundTrip(fixture.bits, profile);
+    const lossDelivery = simulateBlackSkyDelivery(fixture.bits, profile, 1, 3);
     rows.push({
       fixture: fixture.id,
       profile: profile.id,
@@ -31,6 +33,9 @@ for (const fixture of fixtures) {
       overhead_ratio: result.payloadBits === 0 ? null : result.framedBits / result.payloadBits,
       waveform_samples: result.waveformSamples,
       simulated_duration_ms: result.simulatedDurationMs,
+      simulated_loss_attempts: lossDelivery.attempts,
+      retry_count_under_one_dropped_attempt: lossDelivery.retries,
+      simulated_loss_total_duration_ms: lossDelivery.totalSimulatedDurationMs,
       minimum_confidence: result.minimumObservedConfidence,
       fault_cases: 4,
       rejected_faults: rejectedFaults,
