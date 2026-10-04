@@ -4,6 +4,8 @@
 
 This directory is the technical and user documentation for Signal & Radio Log. Documentation describes version **0.6.5** and distinguishes shipped features from foundations that are not yet exposed in the interface.
 
+Start with **[CURRENT.md](CURRENT.md)** for the active documentation source of truth. Historical and observational records are preserved under [`archive/`](archive/) and are explicitly non-normative.
+
 | Document | Purpose |
 |---|---|
 | [Features and user guide](features.md) | Every visible screen, workflow, supported value, Notes template, and current limitation |
