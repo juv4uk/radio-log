@@ -7,6 +7,7 @@ import {
   bytesToBitString,
   countRejectedFrameFaults,
   createDeterministicFrameFaults,
+  simulateBlackSkyDelivery,
   simulateBlackSkyRoundTrip
 } from '../.test-build/src/lib/sens-radio/black-sky.js';
 import { decodeSensRadioFrame, encodeSensRadioFrame } from '../.test-build/src/lib/sens-radio/frame.js';
@@ -70,4 +71,31 @@ test('deterministic frame fault corpus fails closed', () => {
 test('bit helper rejects malformed and non-byte-aligned strings', () => {
   assert.throws(() => bitStringToBytes('10x1'), /only 0 and 1/);
   assert.throws(() => bitStringToBytes('101'), /byte aligned/);
+});
+
+
+test('deterministic whole-attempt loss is recovered by bounded retry without payload mutation', () => {
+  const bits = '001000101101';
+  const delivery = simulateBlackSkyDelivery(bits, BLACK_SKY_LAB_PROFILE_A, 1, 3);
+
+  assert.equal(delivery.attempts, 2);
+  assert.equal(delivery.retries, 1);
+  assert.equal(delivery.droppedAttempts, 1);
+  assert.equal(delivery.roundTrip.decodedBits, bits);
+  assert.deepEqual(delivery.roundTrip.recoveredFrame, encodeSensRadioFrame(bits));
+  assert.equal(
+    delivery.totalSimulatedDurationMs,
+    delivery.roundTrip.simulatedDurationMs * delivery.attempts
+  );
+});
+
+test('retry budget exhaustion fails closed', () => {
+  assert.throws(
+    () => simulateBlackSkyDelivery('101', BLACK_SKY_LAB_PROFILE_A, 3, 3),
+    /exhausted retry budget/
+  );
+  assert.throws(
+    () => simulateBlackSkyDelivery('101', BLACK_SKY_LAB_PROFILE_A, -1, 3),
+    /non-negative integer/
+  );
 });
