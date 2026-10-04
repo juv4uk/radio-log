@@ -54,6 +54,16 @@ jobs:
           path: artifacts/sens-radio-modem-compare.json
           if-no-files-found: error
 
+      - name: SENS-RADIO frame acquisition benchmark
+        run: bun run bench:sync
+
+      - name: Upload SENS-RADIO sync evidence
+        uses: actions/upload-artifact@v4
+        with:
+          name: sens-radio-sync-lab
+          path: artifacts/sens-radio-sync-lab.json
+          if-no-files-found: error
+
       - name: Build (static site)
         run: bun run build
 
