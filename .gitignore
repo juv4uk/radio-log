@@ -41,3 +41,6 @@ docs/PROJECT_MEMORY.md
 # Generated Android resources (icons, mipmap)
 src-tauri/gen/android/app/src/main/res/mipmap-*/
 src-tauri/gen/android/app/src/main/res/mipmap-anydpi-v26/
+
+# Generated deterministic benchmark artifacts
+/artifacts
