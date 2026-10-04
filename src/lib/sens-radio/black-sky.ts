@@ -25,6 +25,14 @@ export interface SensRadioFrameFault {
   readonly frame: Uint8Array;
 }
 
+export interface SensRadioDeliveryResult {
+  readonly attempts: number;
+  readonly retries: number;
+  readonly droppedAttempts: number;
+  readonly totalSimulatedDurationMs: number;
+  readonly roundTrip: SensRadioBlackSkyResult;
+}
+
 export const BLACK_SKY_LAB_PROFILE_A: SensRadioBlackSkyProfile = {
   id: 'black-sky-lab-100',
   modem: {
@@ -135,4 +143,38 @@ export function countRejectedFrameFaults(frame: Uint8Array): number {
     }
   }
   return rejected;
+}
+
+
+/**
+ * Deterministic loss/retry wrapper for CI.
+ *
+ * droppedAttempts models whole-attempt loss only. It does not infer or repair
+ * any semantic content, and it never changes the payload between attempts.
+ */
+export function simulateBlackSkyDelivery(
+  bits: string,
+  profile: SensRadioBlackSkyProfile,
+  droppedAttempts = 0,
+  maxAttempts = 3
+): SensRadioDeliveryResult {
+  if (!Number.isInteger(droppedAttempts) || droppedAttempts < 0) {
+    throw new Error('droppedAttempts must be a non-negative integer');
+  }
+  if (!Number.isInteger(maxAttempts) || maxAttempts < 1) {
+    throw new Error('maxAttempts must be a positive integer');
+  }
+  if (droppedAttempts >= maxAttempts) {
+    throw new Error('SENS-RADIO delivery exhausted retry budget');
+  }
+
+  const attempts = droppedAttempts + 1;
+  const roundTrip = simulateBlackSkyRoundTrip(bits, profile);
+  return {
+    attempts,
+    retries: attempts - 1,
+    droppedAttempts,
+    totalSimulatedDurationMs: roundTrip.simulatedDurationMs * attempts,
+    roundTrip
+  };
 }
