@@ -44,6 +44,16 @@ jobs:
           path: artifacts/sens-radio-channel-lab.json
           if-no-files-found: error
 
+      - name: SENS-RADIO modem comparison benchmark
+        run: bun run bench:modems
+
+      - name: Upload SENS-RADIO modem comparison
+        uses: actions/upload-artifact@v4
+        with:
+          name: sens-radio-modem-compare
+          path: artifacts/sens-radio-modem-compare.json
+          if-no-files-found: error
+
       - name: Build (static site)
         run: bun run build
 
