@@ -34,6 +34,16 @@ jobs:
           path: artifacts/emrg-black-sky.json
           if-no-files-found: error
 
+      - name: SENS-RADIO deterministic impairment benchmark
+        run: bun run bench:channel
+
+      - name: Upload SENS-RADIO channel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: sens-radio-channel-lab
+          path: artifacts/sens-radio-channel-lab.json
+          if-no-files-found: error
+
       - name: Build (static site)
         run: bun run build
 
