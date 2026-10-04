@@ -21,8 +21,8 @@
 
 # ── Lockfiles & generated ─────────────────────────────────────
 package-lock.json -diff linguist-generated
-# GitHub Linguist does not know my-lisp or WSM yet. Common Lisp is the
-# temporary syntax/statistics profile for my-lisp source files; this is
+# GitHub Linguist does not know SENS yet. Common Lisp is the
+# temporary syntax/statistics profile for SENS-related Lisp source files; this is
 # classification, not a claim of language identity.
 # Canonical source extension: .lisp
 *.lisp linguist-language=Common-Lisp linguist-detectable=true -linguist-vendored -linguist-generated -linguist-documentation
