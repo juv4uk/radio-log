@@ -12,7 +12,8 @@
     "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
     "tauri": "tauri",
     "bench:emrg": "tsc -p tsconfig.test.json && node scripts/emrg-black-sky-bench.mjs",
-    "bench:channel": "tsc -p tsconfig.test.json && node scripts/sens-radio-channel-bench.mjs"
+    "bench:channel": "tsc -p tsconfig.test.json && node scripts/sens-radio-channel-bench.mjs",
+    "bench:modems": "tsc -p tsconfig.test.json && node scripts/sens-radio-modem-compare.mjs"
   },
   "license": "SEE LICENSE IN LICENSE",
   "dependencies": {
