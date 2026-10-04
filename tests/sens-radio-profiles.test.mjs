@@ -1,6 +1,7 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
 import {
+  createSensRadioRxEvidence,
   LAB_LOOPBACK_PROFILE,
   SensRadioLoopbackTransport,
   UA_AMATEUR_OPEN_PROFILE,
@@ -36,6 +37,37 @@ test('different RF profile frequencies carry byte-identical SENS frames', () => 
     [433_920_000, 868_300_000]
   );
   assert.deepEqual(evidence.map((item) => item.decoded.bits), [payload, payload]);
+  assert.deepEqual(
+    evidence.map((item) => item.observation.kind),
+    ['raw-observation', 'raw-observation']
+  );
+  assert.deepEqual(
+    evidence.map((item) => item.interpretation.status),
+    ['INFERRED', 'INFERRED']
+  );
+  assert.equal(evidence[0].observation.acquisition.acquisitionSource, 'loopback');
+  assert.equal(evidence[0].interpretation.sourceObservation, 'raw-observation');
+});
+
+test('invalid raw evidence remains preserved and explicitly unresolved', () => {
+  const corrupted = Uint8Array.from([0x53, 0x45, 0x4e, 0x53, 0x01]);
+  const evidence = createSensRadioRxEvidence(
+    LAB_LOOPBACK_PROFILE,
+    false,
+    corrupted,
+    '2026-10-04T00:00:00.000Z',
+    'fixture-test',
+    'test-build'
+  );
+
+  assert.deepEqual(evidence.rawFrame, corrupted);
+  assert.deepEqual(evidence.observation.frame, corrupted);
+  assert.equal(evidence.observation.acquisition.acquisitionSource, 'fixture-test');
+  assert.equal(evidence.observation.acquisition.buildRevision, 'test-build');
+  assert.equal(evidence.decoded, null);
+  assert.equal(evidence.interpretation.kind, 'unresolved');
+  assert.equal(evidence.interpretation.status, 'UNRESOLVED');
+  assert.match(evidence.interpretation.reason, /truncated|length|CRC/i);
 });
 
 test('RF profile metadata does not enter decoded SENS identity', () => {

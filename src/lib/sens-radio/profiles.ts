@@ -25,13 +25,39 @@ export interface SensRadioSendRequest {
   readonly encrypted: boolean;
 }
 
+export interface SensRadioAcquisitionContext {
+  readonly profileId: string;
+  readonly centerFrequencyHz: number | null;
+  readonly bandwidthHz: number | null;
+  readonly modulation: string;
+  readonly capturedAt: string;
+  readonly acquisitionSource: string;
+  readonly buildRevision: string;
+}
+
+export interface SensRadioRawObservation {
+  readonly kind: 'raw-observation';
+  readonly frame: Uint8Array;
+  readonly acquisition: SensRadioAcquisitionContext;
+}
+
+export interface SensRadioInterpretation {
+  readonly kind: 'inferred-event' | 'unresolved';
+  readonly status: 'INFERRED' | 'UNRESOLVED';
+  readonly decoded: SensRadioFrame | null;
+  readonly sourceObservation: 'raw-observation';
+  readonly reason?: string;
+}
+
 export interface SensRadioRxEvidence {
   readonly profileId: string;
   readonly centerFrequencyHz: number | null;
   readonly receivedAt: string;
   readonly encrypted: boolean;
   readonly rawFrame: Uint8Array;
-  readonly decoded: SensRadioFrame;
+  readonly decoded: SensRadioFrame | null;
+  readonly observation: SensRadioRawObservation;
+  readonly interpretation: SensRadioInterpretation;
 }
 
 export const LAB_LOOPBACK_PROFILE: SensRadioProfile = {
@@ -102,6 +128,66 @@ export function assertSensRadioProfilePolicy(profile: SensRadioProfile, encrypte
   }
 }
 
+export function createSensRadioRxEvidence(
+  profile: SensRadioProfile,
+  encrypted: boolean,
+  rawFrame: Uint8Array,
+  receivedAt = new Date().toISOString(),
+  acquisitionSource = 'unknown',
+  buildRevision = 'unknown'
+): SensRadioRxEvidence {
+  const capturedFrame = rawFrame.slice();
+  const acquisition: SensRadioAcquisitionContext = {
+    profileId: profile.id,
+    centerFrequencyHz: profile.centerFrequencyHz,
+    bandwidthHz: profile.bandwidthHz,
+    modulation: profile.modulation,
+    capturedAt: receivedAt,
+    acquisitionSource,
+    buildRevision
+  };
+  const observation: SensRadioRawObservation = {
+    kind: 'raw-observation',
+    frame: capturedFrame,
+    acquisition
+  };
+  try {
+    const decoded = decodeSensRadioFrame(capturedFrame);
+    return {
+      profileId: profile.id,
+      centerFrequencyHz: profile.centerFrequencyHz,
+      receivedAt,
+      encrypted,
+      rawFrame: capturedFrame,
+      decoded,
+      observation,
+      interpretation: {
+        kind: 'inferred-event',
+        status: 'INFERRED',
+        decoded,
+        sourceObservation: 'raw-observation'
+      }
+    };
+  } catch (error) {
+    return {
+      profileId: profile.id,
+      centerFrequencyHz: profile.centerFrequencyHz,
+      receivedAt,
+      encrypted,
+      rawFrame: capturedFrame,
+      decoded: null,
+      observation,
+      interpretation: {
+        kind: 'unresolved',
+        status: 'UNRESOLVED',
+        decoded: null,
+        sourceObservation: 'raw-observation',
+        reason: error instanceof Error ? error.message : String(error)
+      }
+    };
+  }
+}
+
 export type SensRadioEvidenceHandler = (evidence: SensRadioRxEvidence) => void;
 
 /**
@@ -121,15 +207,14 @@ export class SensRadioLoopbackTransport {
   send(request: SensRadioSendRequest): Uint8Array {
     assertSensRadioProfilePolicy(this.profile, request.encrypted);
     const rawFrame = encodeSensRadioFrame(request.bits);
-    const decoded = decodeSensRadioFrame(rawFrame);
-    const evidence: SensRadioRxEvidence = {
-      profileId: this.profile.id,
-      centerFrequencyHz: this.profile.centerFrequencyHz,
-      receivedAt: new Date().toISOString(),
-      encrypted: request.encrypted,
-      rawFrame: rawFrame.slice(),
-      decoded
-    };
+    const evidence = createSensRadioRxEvidence(
+      this.profile,
+      request.encrypted,
+      rawFrame,
+      new Date().toISOString(),
+      'loopback',
+      'runtime'
+    );
     for (const handler of this.handlers) handler(evidence);
     return rawFrame;
   }

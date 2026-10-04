@@ -70,6 +70,15 @@ QSO Connect AES-GCM remains a separate application layer. It must not be silentl
 
 Loopback receive evidence records profile ID, configured center frequency, timestamp, raw frame bytes, encryption-policy fact and decoded frame. Acquisition facts remain outside SENS identity, matching radio-log #8.
 
+The evidence contract keeps the two epistemic layers explicit:
+
+- `observation.kind = "raw-observation"` preserves received frame bytes and acquisition context (profile, frequency, bandwidth, modulation, capture time, source and build revision);
+- `interpretation.kind = "inferred-event"` records a successful decode derived from that observation;
+- `interpretation.kind = "unresolved"` preserves malformed or undecodable raw evidence without inventing a semantic event;
+- `interpretation.sourceObservation` links the derived result back to the raw observation.
+
+`createSensRadioRxEvidence()` is the shared boundary for this conversion. A raw frame is copied before storage, so later decoding or caller mutation cannot erase the evidence. The loopback path supplies `acquisitionSource = "loopback"` and `buildRevision = "runtime"`; hardware adapters must provide their own acquisition source and build identity.
+
 ## Українська
 
 ### Шари
