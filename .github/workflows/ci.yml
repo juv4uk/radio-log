@@ -21,8 +21,18 @@ jobs:
       - name: Type check (svelte-check)
         run: bun run check
 
-      - name: Unit tests (ADIF, FT8, rules, connect)
+      - name: Unit tests (including SENS-RADIO / EMRG)
         run: bun run test
+
+      - name: EMRG black-sky deterministic benchmark
+        run: bun run bench:emrg
+
+      - name: Upload EMRG benchmark artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: emrg-black-sky
+          path: artifacts/emrg-black-sky.json
+          if-no-files-found: error
 
       - name: Build (static site)
         run: bun run build
