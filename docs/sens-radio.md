@@ -37,6 +37,8 @@ The benchmark currently checks:
 - one whole-attempt simulated loss followed by bounded retry;
 - frame overhead, waveform sample count, simulated duration and minimum detector confidence.
 
+The impairment lab also exposes `evaluateSensRadioSamples(...)`, so the same fail-closed decoder path can accept externally acquired sample arrays later (for example, parsed WAV/IQ-derived audio) without changing SENS semantics. Evidence includes a transparent BFSK bandwidth estimate (`tone span + 2 × symbol rate`) and decoder-work counters based on tone/sample visits and trigonometric evaluations.
+
 The local bit fixtures are transport witnesses only. They are not emergency semantic authority; canonical EMRG form fixtures belong to SENS and will be consumed once exported by `sens#3111`.
 
 ### Frequency profiles
@@ -87,7 +89,7 @@ Loopback receive evidence records profile ID, configured center frequency, times
 
 Receive evidence зберігає профіль, частоту, час, сирий кадр і декодований frame окремо від SENS-семантики.
 
-Лабораторний свідок запускається командами `npm test` та `npm run bench:emrg`. Бенчмарк формує JSON-артефакт із розміром payload/frame, overhead, кількістю семплів, модельованим часом, confidence, відкинутими пошкодженнями та retry при одній детермінованій втраті спроби.
+Лабораторний свідок запускається командами `npm test` та `npm run bench:emrg`. Бенчмарк формує JSON-артефакт із розміром payload/frame, overhead, кількістю семплів, модельованим часом, confidence, відкинутими пошкодженнями та retry при одній детермінованій втраті спроби. `evaluateSensRadioSamples(...)` приймає зовнішній масив семплів тим самим fail-closed шляхом; evidence також містить оцінку baseband bandwidth (`tone span + 2 × symbol rate`) і прозорий облік роботи декодера.
 
 ## Deutsch
 

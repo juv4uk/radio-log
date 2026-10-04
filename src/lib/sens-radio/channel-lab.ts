@@ -27,7 +27,7 @@ export type SensRadioLockState = 'LOCKED' | 'AMBIGUOUS' | 'UNLOCKED';
 export type SensRadioFrameOutcome = 'SUCCESS' | 'REJECTED' | 'NOT_REACHED';
 
 export interface SensRadioChannelEvidence {
-  readonly impairment: SensRadioChannelImpairment['kind'];
+  readonly impairment: SensRadioChannelImpairment['kind'] | 'external-samples';
   readonly lockState: SensRadioLockState;
   readonly frameOutcome: SensRadioFrameOutcome;
   readonly payloadIdentity: boolean;
@@ -38,6 +38,10 @@ export interface SensRadioChannelEvidence {
   readonly sampleCount: number;
   readonly minimumConfidence: number | null;
   readonly falseLockCount: number;
+  readonly toneSpanHz: number;
+  readonly occupiedBandwidthEstimateHz: number;
+  readonly decoderToneSampleVisits: number;
+  readonly decoderTrigEvaluationsEstimate: number;
   readonly reason: string | null;
 }
 
@@ -201,30 +205,43 @@ function applyImpairment(
   }
 }
 
-export function evaluateSensRadioChannel(
+function analyzeReceivedSamples(
   payloadBits: string,
-  impairment: SensRadioChannelImpairment,
-  profile: SensRadioBlackSkyProfile = BLACK_SKY_LAB_PROFILE_A
+  frame: Uint8Array,
+  wireBits: string,
+  samples: ArrayLike<number>,
+  profile: SensRadioBlackSkyProfile,
+  impairment: SensRadioChannelEvidence['impairment']
 ): SensRadioChannelEvidence {
-  const frame = encodeSensRadioFrame(payloadBits);
-  const wireBits = bytesToBitString(frame);
-  const samples = applyImpairment(wireBits, profile, impairment);
   const sps = samplesPerSymbol(profile);
+  const sampleCount = samples.length;
+  const toneSpanHz = Math.abs(profile.modem.oneToneHz - profile.modem.zeroToneHz);
+  const occupiedBandwidthEstimateHz = toneSpanHz + 2 * profile.modem.symbolRate;
+  const decoderToneSampleVisits = sampleCount * 2;
+  const decoderTrigEvaluationsEstimate = sampleCount * 4;
+
+  const common = {
+    impairment,
+    samplesPerBit: sps,
+    sampleCount,
+    toneSpanHz,
+    occupiedBandwidthEstimateHz,
+    decoderToneSampleVisits,
+    decoderTrigEvaluationsEstimate
+  } as const;
 
   let decisions;
   try {
     decisions = decodeAlignedBfsk(samples, profile.modem);
   } catch (error) {
     return {
-      impairment: impairment.kind,
+      ...common,
       lockState: 'UNLOCKED',
       frameOutcome: 'NOT_REACHED',
       payloadIdentity: false,
       frameIdentity: false,
       crcAccepted: null,
       berBeforeCrc: null,
-      samplesPerBit: sps,
-      sampleCount: samples.length,
       minimumConfidence: null,
       falseLockCount: 0,
       reason: error instanceof Error ? error.message : String(error)
@@ -240,15 +257,13 @@ export function evaluateSensRadioChannel(
     receivedBits = decisionsToBitString(decisions, profile.minimumConfidence);
   } catch (error) {
     return {
-      impairment: impairment.kind,
+      ...common,
       lockState: 'AMBIGUOUS',
       frameOutcome: 'NOT_REACHED',
       payloadIdentity: false,
       frameIdentity: false,
       crcAccepted: null,
       berBeforeCrc: null,
-      samplesPerBit: sps,
-      sampleCount: samples.length,
       minimumConfidence,
       falseLockCount: 0,
       reason: error instanceof Error ? error.message : String(error)
@@ -262,15 +277,13 @@ export function evaluateSensRadioChannel(
     recoveredFrame = bitStringToBytes(receivedBits);
   } catch (error) {
     return {
-      impairment: impairment.kind,
+      ...common,
       lockState: 'LOCKED',
       frameOutcome: 'REJECTED',
       payloadIdentity: false,
       frameIdentity: false,
       crcAccepted: false,
       berBeforeCrc,
-      samplesPerBit: sps,
-      sampleCount: samples.length,
       minimumConfidence,
       falseLockCount: 1,
       reason: error instanceof Error ? error.message : String(error)
@@ -285,15 +298,13 @@ export function evaluateSensRadioChannel(
 
     if (!frameIdentity || !payloadIdentity) {
       return {
-        impairment: impairment.kind,
+        ...common,
         lockState: 'LOCKED',
         frameOutcome: 'REJECTED',
         payloadIdentity,
         frameIdentity,
         crcAccepted: true,
         berBeforeCrc,
-        samplesPerBit: sps,
-        sampleCount: samples.length,
         minimumConfidence,
         falseLockCount: 1,
         reason: 'decoded frame did not preserve exact identity'
@@ -301,33 +312,50 @@ export function evaluateSensRadioChannel(
     }
 
     return {
-      impairment: impairment.kind,
+      ...common,
       lockState: 'LOCKED',
       frameOutcome: 'SUCCESS',
       payloadIdentity: true,
       frameIdentity: true,
       crcAccepted: true,
       berBeforeCrc,
-      samplesPerBit: sps,
-      sampleCount: samples.length,
       minimumConfidence,
       falseLockCount: 0,
       reason: null
     };
   } catch (error) {
     return {
-      impairment: impairment.kind,
+      ...common,
       lockState: 'LOCKED',
       frameOutcome: 'REJECTED',
       payloadIdentity: false,
       frameIdentity: false,
       crcAccepted: false,
       berBeforeCrc,
-      samplesPerBit: sps,
-      sampleCount: samples.length,
       minimumConfidence,
       falseLockCount: 1,
       reason: error instanceof Error ? error.message : String(error)
     };
   }
+}
+
+export function evaluateSensRadioSamples(
+  payloadBits: string,
+  samples: ArrayLike<number>,
+  profile: SensRadioBlackSkyProfile = BLACK_SKY_LAB_PROFILE_A
+): SensRadioChannelEvidence {
+  const frame = encodeSensRadioFrame(payloadBits);
+  const wireBits = bytesToBitString(frame);
+  return analyzeReceivedSamples(payloadBits, frame, wireBits, samples, profile, 'external-samples');
+}
+
+export function evaluateSensRadioChannel(
+  payloadBits: string,
+  impairment: SensRadioChannelImpairment,
+  profile: SensRadioBlackSkyProfile = BLACK_SKY_LAB_PROFILE_A
+): SensRadioChannelEvidence {
+  const frame = encodeSensRadioFrame(payloadBits);
+  const wireBits = bytesToBitString(frame);
+  const samples = applyImpairment(wireBits, profile, impairment);
+  return analyzeReceivedSamples(payloadBits, frame, wireBits, samples, profile, impairment.kind);
 }

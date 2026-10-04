@@ -1,8 +1,12 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
+import { encodeAlignedBfsk } from '../.test-build/src/lib/sens-radio/bfsk-tx.js';
+import { BLACK_SKY_LAB_PROFILE_A, bytesToBitString } from '../.test-build/src/lib/sens-radio/black-sky.js';
+import { encodeSensRadioFrame } from '../.test-build/src/lib/sens-radio/frame.js';
 import {
   addDeterministicAwgn,
   evaluateSensRadioChannel,
+  evaluateSensRadioSamples,
   resampleLinear
 } from '../.test-build/src/lib/sens-radio/channel-lab.js';
 
@@ -104,4 +108,36 @@ test('all impairment outcomes obey fail-closed semantic law', () => {
       assert.equal(result.crcAccepted, true, impairment.kind);
     }
   }
+});
+
+
+test('external sample arrays use the same decoder path and preserve exact identity', () => {
+  const frame = encodeSensRadioFrame(payload);
+  const wireBits = bytesToBitString(frame);
+  const samples = encodeAlignedBfsk(wireBits, BLACK_SKY_LAB_PROFILE_A.modem);
+  const result = evaluateSensRadioSamples(payload, samples, BLACK_SKY_LAB_PROFILE_A);
+
+  assert.equal(result.impairment, 'external-samples');
+  assert.equal(result.frameOutcome, 'SUCCESS');
+  assert.equal(result.payloadIdentity, true);
+  assert.equal(result.frameIdentity, true);
+  assert.equal(result.berBeforeCrc, 0);
+});
+
+test('channel evidence reports transparent bandwidth and decoder-work estimates', () => {
+  const result = evaluateSensRadioChannel(payload, { kind: 'clean' });
+
+  assert.equal(
+    result.toneSpanHz,
+    Math.abs(
+      BLACK_SKY_LAB_PROFILE_A.modem.oneToneHz -
+      BLACK_SKY_LAB_PROFILE_A.modem.zeroToneHz
+    )
+  );
+  assert.equal(
+    result.occupiedBandwidthEstimateHz,
+    result.toneSpanHz + 2 * BLACK_SKY_LAB_PROFILE_A.modem.symbolRate
+  );
+  assert.equal(result.decoderToneSampleVisits, result.sampleCount * 2);
+  assert.equal(result.decoderTrigEvaluationsEstimate, result.sampleCount * 4);
 });
