@@ -21,6 +21,7 @@ test('exact-bitstream AIR does not inherit final storage-byte slack', () => {
   assert.equal(accounting.physical_container_bytes, 1);
   assert.equal(accounting.carrier_payload_bits, 7);
   assert.equal(accounting.total_wire_bits, 7);
+  assert.equal(accounting.payload_utilization, 1);
   assert.equal(accounting.ideal_airtime_seconds, 3.5);
 });
 
@@ -36,6 +37,7 @@ test('byte-container AIR includes physical tail only when the profile chooses it
   assert.equal(accounting.storage_container_bits, 8);
   assert.equal(accounting.carrier_payload_bits, 8);
   assert.equal(accounting.total_wire_bits, 16);
+  assert.equal(accounting.payload_utilization, 7 / 16);
   assert.equal(accounting.ideal_airtime_seconds, 8);
 });
 
@@ -53,6 +55,7 @@ test('SENS-RADIO v1 accounting equals the actual encoded frame size', () => {
   assert.equal(accounting.carrier_mode, 'byte-container');
   assert.equal(accounting.total_wire_bits, frame.length * 8);
   assert.equal(accounting.total_wire_bits, 128);
+  assert.equal(accounting.payload_utilization, 12 / 128);
   assert.equal(accounting.ideal_airtime_seconds, 1.28);
 });
 
