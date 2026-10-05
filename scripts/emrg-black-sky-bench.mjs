@@ -27,6 +27,7 @@ for (const fixture of fixtures) {
     rows.push({
       fixture: fixture.id,
       profile: profile.id,
+      ...result.bitAccounting,
       payload_bits: result.payloadBits,
       frame_bytes: result.frameBytes,
       framed_bits: result.framedBits,
@@ -50,6 +51,7 @@ const report = {
   generated_by: 'deterministic-simulator',
   live_rf: false,
   semantic_authority: false,
+  accounting_fields: 'juv4uk/sens#3605 STORE/AIR-compatible',
   note: 'Transport-only fixtures until canonical EMRG semantic fixtures are exported by sens#3111.',
   rows
 };
