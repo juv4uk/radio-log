@@ -4,7 +4,10 @@ import {
   accountSensRadioV1Frame,
   createSensRadioBitAccounting
 } from '../.test-build/src/lib/sens-radio/accounting.js';
-import { encodeSensRadioFrame } from '../.test-build/src/lib/sens-radio/frame.js';
+import {
+  decodeSensRadioFrame,
+  encodeSensRadioFrame
+} from '../.test-build/src/lib/sens-radio/frame.js';
 
 test('exact-bitstream AIR does not inherit final storage-byte slack', () => {
   const accounting = createSensRadioBitAccounting(7, {
@@ -51,6 +54,20 @@ test('SENS-RADIO v1 accounting equals the actual encoded frame size', () => {
   assert.equal(accounting.total_wire_bits, frame.length * 8);
   assert.equal(accounting.total_wire_bits, 128);
   assert.equal(accounting.ideal_airtime_seconds, 1.28);
+});
+
+test('semantic zero suffix survives byte container framing unchanged', () => {
+  const bits = '1010000';
+  const frame = encodeSensRadioFrame(bits);
+  const decoded = decodeSensRadioFrame(frame);
+  const accounting = accountSensRadioV1Frame(bits.length, 100);
+
+  assert.equal(decoded.bits, bits);
+  assert.equal(accounting.semantic_payload_bits, 7);
+  assert.equal(accounting.storage_container_bits, 8);
+  assert.equal(accounting.tail_unused_bits, 1);
+  assert.equal(accounting.carrier_payload_bits, 8);
+  assert.equal(accounting.total_wire_bits, frame.length * 8);
 });
 
 test('semantic bit length cannot silently inflate to one byte per exact-width word', () => {
