@@ -124,6 +124,30 @@ Every modem row must recover the exact original bit string. The script records
 CPU time and corpus hashes as **baseline evidence**, not as a GPU performance
 claim.
 
+## Proven Float64 -> Float32 falsifier
+
+The representation boundary is not hypothetical.
+
+`tests/gpu-float-boundary.test.mjs` constructs one aligned 80-sample BPSK
+symbol with only two non-zero samples:
+
+```text
+sample[0] = 0.5          reference = +1
+sample[4] = 0.5000000001 reference = -1
+```
+
+With the current Float64 oracle the correlation is slightly negative
+(approximately `-1e-10`), so the decoder chooses bit `0`.
+
+Binary32 rounds both sample values to exactly `0.5`. Passing those narrowed
+values through the same CPU decoder makes the correlation exactly zero; the
+current `correlation >= 0` rule then chooses bit `1`.
+
+Therefore an implicit Float64 -> F32 transport is already **falsified** as a
+general exact-parity mechanism. Any CML GPU path must either preserve enough
+input precision or explicitly constrain/prove a corpus where narrowing cannot
+cross the decision boundary.
+
 ## Next CML contract
 
 The first useful CML child is not “generic DSP”. It is a bounded operation with
