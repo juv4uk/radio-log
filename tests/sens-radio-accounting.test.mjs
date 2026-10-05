@@ -30,15 +30,19 @@ test('byte-container AIR includes physical tail only when the profile chooses it
     carrierMode: 'byte-container',
     framingBits: 5,
     integrityBits: 3,
+    profileOverheadBits: 2,
     rawBitRate: 2
   });
 
   assert.equal(accounting.semantic_payload_bits, 7);
   assert.equal(accounting.storage_container_bits, 8);
   assert.equal(accounting.carrier_payload_bits, 8);
-  assert.equal(accounting.total_wire_bits, 16);
-  assert.equal(accounting.payload_utilization, 7 / 16);
-  assert.equal(accounting.ideal_airtime_seconds, 8);
+  assert.equal(accounting.framing_bits, 5);
+  assert.equal(accounting.integrity_bits, 3);
+  assert.equal(accounting.profile_overhead_bits, 2);
+  assert.equal(accounting.total_wire_bits, 18);
+  assert.equal(accounting.payload_utilization, 7 / 18);
+  assert.equal(accounting.ideal_airtime_seconds, 9);
 });
 
 test('SENS-RADIO v1 accounting equals the actual encoded frame size', () => {
