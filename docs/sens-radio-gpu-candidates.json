@@ -1,0 +1,114 @@
+{
+  "schema": "radio-log/sens-radio-gpu-candidates/v1",
+  "owner_issue": "juv4uk/radio-log#39",
+  "mechanism_owner": "juv4uk/cml#472",
+  "reviewed_sources_commit": "main",
+  "current_cml_worker_protocol": [
+    "ping",
+    "probe",
+    "add-i32",
+    "chain-file-i32",
+    "chain-file-i32-provenance"
+  ],
+  "candidates": [
+    {
+      "id": "bpsk-aligned-decode",
+      "priority": "P0",
+      "source": "src/lib/sens-radio/bpsk.ts",
+      "function": "decodeAlignedBpsk",
+      "input_layout": "Float64Array contiguous samples, 8 bytes/sample",
+      "independence": "each aligned symbol is an independent reduction over samplesPerSymbol",
+      "oracle": "CPU TypeScript decision bits and frame identity",
+      "semantic_relation": "decision bits must match exactly; floating correlation/confidence parity must be defined before CUDA timing is authoritative",
+      "status": "BLOCKED_MECHANISM",
+      "blocker": "CML shared worker has no bounded float/trig/reduction capability"
+    },
+    {
+      "id": "bfsk-aligned-decode",
+      "priority": "P0",
+      "source": "src/lib/sens-radio/bfsk-rx.ts",
+      "function": "decodeAlignedBfsk",
+      "input_layout": "Float64Array contiguous samples, 8 bytes/sample",
+      "independence": "each aligned symbol independently computes two tone-energy reductions",
+      "oracle": "CPU TypeScript decision bits and frame identity",
+      "semantic_relation": "decision bits must match exactly; floating energy/confidence parity must be defined before CUDA timing is authoritative",
+      "status": "BLOCKED_MECHANISM",
+      "blocker": "CML shared worker has no bounded float/trig/reduction capability"
+    },
+    {
+      "id": "linear-resample",
+      "priority": "P1",
+      "source": "src/lib/sens-radio/channel-lab.ts",
+      "function": "resampleLinear",
+      "input_layout": "Float64Array contiguous samples, 8 bytes/sample",
+      "independence": "each output sample depends only on its output index and at most two adjacent input samples",
+      "oracle": "CPU TypeScript output samples",
+      "semantic_relation": "numeric error relation must be ratified; GPU output must never become the oracle",
+      "status": "BLOCKED_NUMERIC_CONTRACT",
+      "blocker": "no agreed f64 interpolation parity/tolerance contract and no CML float-map worker opcode"
+    },
+    {
+      "id": "bpsk-aligned-encode",
+      "priority": "P2",
+      "source": "src/lib/sens-radio/bpsk.ts",
+      "function": "encodeAlignedBpsk",
+      "input_layout": "bit string -> Float64Array waveform",
+      "independence": "each output sample is a pure function of global sample index and symbol sign",
+      "oracle": "CPU TypeScript waveform plus decode/frame round-trip",
+      "semantic_relation": "waveform numeric relation must be defined before CUDA comparison",
+      "status": "BLOCKED_NUMERIC_CONTRACT",
+      "blocker": "no admitted float/trig map in shared worker"
+    },
+    {
+      "id": "bfsk-aligned-encode",
+      "priority": "NO_FIRST_OFFLOAD",
+      "source": "src/lib/sens-radio/bfsk-tx.ts",
+      "function": "encodeAlignedBfsk",
+      "independence": "current implementation carries rolling phase across samples and symbols",
+      "status": "STATEFUL_CURRENT_DEFINITION",
+      "blocker": "parallel reformulation requires a proof that closed-form phase preserves the current waveform contract"
+    },
+    {
+      "id": "deterministic-awgn",
+      "priority": "NO_FIRST_OFFLOAD",
+      "source": "src/lib/sens-radio/channel-lab.ts",
+      "function": "addDeterministicAwgn",
+      "independence": "current exact sample stream depends on sequential xorshift32 state and Box-Muller pairing",
+      "status": "STATEFUL_CURRENT_DEFINITION",
+      "blocker": "naive parallel RNG changes the deterministic CPU oracle"
+    },
+    {
+      "id": "frame-sync-acquisition",
+      "priority": "CPU_CONTROL",
+      "source": "src/lib/sens-radio/frame-sync.ts",
+      "function": "acquireSensRadioFromAlignedBpsk",
+      "independence": "control-heavy scan, variable candidate lengths, CRC validation, polarity choice and deduplication",
+      "status": "KEEP_CPU",
+      "blocker": "underlying aligned BPSK reduction may offload, but frame acquisition remains semantic/control logic"
+    },
+    {
+      "id": "frame-crc-pack",
+      "priority": "P2_BATCH_ONLY",
+      "source": "src/lib/sens-radio/frame.ts",
+      "functions": [
+        "encodeSensRadioFrame",
+        "decodeSensRadioFrame"
+      ],
+      "independence": "CRC is serial within one frame; many frames could be independent",
+      "status": "NO_BATCH_API",
+      "blocker": "single-frame work is too small; no admitted multi-frame CML worker capability"
+    },
+    {
+      "id": "ft8-wasm",
+      "priority": "KEEP_EXISTING_SUBSTRATE",
+      "source": "src/lib/ft8/codec.ts",
+      "functions": [
+        "decodeFt8",
+        "encodeFt8"
+      ],
+      "independence": "delegated to ft8js Emscripten/WASM implementation",
+      "status": "NOT_A_CML_CUDA_TARGET",
+      "blocker": "GPU port would reimplement an external decoder/encoder and create unnecessary semantic divergence"
+    }
+  ]
+}
