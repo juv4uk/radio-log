@@ -21,7 +21,9 @@
       "oracle": "CPU TypeScript decision bits and frame identity",
       "semantic_relation": "decision bits must match exactly; floating correlation/confidence parity must be defined before CUDA timing is authoritative",
       "status": "BLOCKED_MECHANISM",
-      "blocker": "CML shared worker has no bounded float/trig/reduction capability"
+      "blocker": "CML shared worker has no bounded float/trig/reduction capability; implicit f64->f32 transport is proven capable of flipping a decision bit",
+      "f64_to_f32_exact_parity": "FALSIFIED_BY_TEST",
+      "falsifier": "tests/gpu-float-boundary.test.mjs"
     },
     {
       "id": "bfsk-aligned-decode",
