@@ -25,6 +25,27 @@ test('exact-bitstream AIR does not inherit final storage-byte slack', () => {
   assert.equal(accounting.ideal_airtime_seconds, 3.5);
 });
 
+test('shared STORE/AIR overhead vector matches sens#3605', () => {
+  const accounting = createSensRadioBitAccounting(7, {
+    carrierMode: 'exact-bitstream',
+    framingBits: 5,
+    integrityBits: 3,
+    profileOverheadBits: 2,
+    rawBitRate: 2
+  });
+
+  assert.equal(accounting.semantic_payload_bits, 7);
+  assert.equal(accounting.storage_container_bits, 8);
+  assert.equal(accounting.tail_unused_bits, 1);
+  assert.equal(accounting.carrier_payload_bits, 7);
+  assert.equal(accounting.framing_bits, 5);
+  assert.equal(accounting.integrity_bits, 3);
+  assert.equal(accounting.profile_overhead_bits, 2);
+  assert.equal(accounting.total_wire_bits, 17);
+  assert.equal(accounting.payload_utilization, 7 / 17);
+  assert.equal(accounting.ideal_airtime_seconds, 8.5);
+});
+
 test('byte-container AIR includes physical tail only when the profile chooses it', () => {
   const accounting = createSensRadioBitAccounting(7, {
     carrierMode: 'byte-container',
