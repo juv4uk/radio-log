@@ -1,5 +1,6 @@
 import { decodeAlignedBfsk, decisionsToBitString, type BfskRxConfig } from './bfsk-rx.js';
 import { encodeAlignedBfsk } from './bfsk-tx.js';
+import { accountSensRadioV1Frame, type SensRadioBitAccounting } from './accounting.js';
 import { decodeSensRadioFrame, encodeSensRadioFrame } from './frame.js';
 
 export interface SensRadioBlackSkyProfile {
@@ -13,6 +14,7 @@ export interface SensRadioBlackSkyResult {
   readonly payloadBits: number;
   readonly frameBytes: number;
   readonly framedBits: number;
+  readonly bitAccounting: SensRadioBitAccounting;
   readonly waveformSamples: number;
   readonly simulatedDurationMs: number;
   readonly minimumObservedConfidence: number;
@@ -85,6 +87,14 @@ export function simulateBlackSkyRoundTrip(
 ): SensRadioBlackSkyResult {
   const frame = encodeSensRadioFrame(bits);
   const framedBits = bytesToBitString(frame);
+  const bitAccounting = accountSensRadioV1Frame(bits.length, profile.modem.symbolRate);
+  if (bitAccounting.total_wire_bits !== framedBits.length) {
+    throw new Error('SENS-RADIO bit accounting does not match encoded frame length');
+  }
+  const idealAirtimeSeconds = bitAccounting.ideal_airtime_seconds;
+  if (idealAirtimeSeconds === null) {
+    throw new Error('SENS-RADIO black-sky profile requires a raw bit rate');
+  }
   const waveform = encodeAlignedBfsk(framedBits, profile.modem);
   const decisions = decodeAlignedBfsk(waveform, profile.modem);
   const receivedBits = decisionsToBitString(decisions, profile.minimumConfidence);
@@ -100,8 +110,9 @@ export function simulateBlackSkyRoundTrip(
     payloadBits: bits.length,
     frameBytes: frame.length,
     framedBits: framedBits.length,
+    bitAccounting,
     waveformSamples: waveform.length,
-    simulatedDurationMs: (framedBits.length / profile.modem.symbolRate) * 1_000,
+    simulatedDurationMs: idealAirtimeSeconds * 1_000,
     minimumObservedConfidence,
     decodedBits: decoded.bits,
     recoveredFrame
