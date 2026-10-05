@@ -24,6 +24,12 @@ jobs:
       - name: Unit tests (including SENS-RADIO / EMRG)
         run: bun run test
 
+      - name: GPU-candidate CPU-oracle smoke
+        env:
+          RADIO_GPU_BASELINE_BITS: 64,256
+          RADIO_GPU_RESAMPLE_SAMPLES: 64,256
+        run: bun run bench:gpu-candidates
+
       - name: EMRG black-sky deterministic benchmark
         run: bun run bench:emrg
 
