@@ -10,7 +10,7 @@ This inventory starts from code that already exists in `radio-log`. It does
 not create DSP work merely to use a GPU.
 
 The machine-readable source of this table is
-`docs/sens-radio-gpu-candidates.json`.
+`2026-10-05-sens-radio-gpu-candidates.json` (архівна копія в цій директорії).
 
 ## First candidates
 
